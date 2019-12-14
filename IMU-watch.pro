@@ -1,7 +1,9 @@
 QT += qml quick 3dinput
 
 SOURCES += \
-    main.cpp
+    main.cpp \
+    data_receiver.cpp \
+    attitude_solver.cpp
 
 OTHER_FILES += \
     SceneEntity.qml \
@@ -9,3 +11,7 @@ OTHER_FILES += \
 
 RESOURCES += \
     resources.qrc
+
+HEADERS += \
+    data_receiver.h \
+    attitude_solver.h
