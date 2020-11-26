@@ -13,9 +13,9 @@ public:
 
     Q_INVOKABLE void start();
 public slots:
-    void onDataReceived(RawData_t raw_data);
+    void onDataReceived(long ts, float ax, float ay, float az, float gx, float gy, float gz);
 signals:
-    void attitudeChanged(QQuaternion q);
+    void attitudeChanged(qreal aq0, qreal aq1, qreal aq2, qreal aq3);
 private:
     DataReceiver* _data_receiver;
     double _q0{1};

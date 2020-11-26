@@ -6,6 +6,10 @@ Item {
 //    width: 800
 //    height: 600
 
+    Component.onCompleted: {
+        console.log("IMU-watch start...")
+    }
+
     Scene3D {
         id: scene3d
         anchors.fill: parent

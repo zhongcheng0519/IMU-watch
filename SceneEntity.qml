@@ -8,9 +8,24 @@ import QtQuick.Scene3D 2.0
 
 Entity {
     id: sceneRoot
+    property bool showReceivedData: true
     property real yaw: 0.0
     property real pitch: 0.0
     property real roll: 0.0
+    property real q0: 1.0
+    property real q1: 0.0
+    property real q2: 0.0
+    property real q3: 0.0
+
+    Connections {
+        target: g_attitude_solver
+        onAttitudeChanged: {
+            q0 = aq0
+            q1 = aq1
+            q2 = aq2
+            q3 = aq3
+        }
+    }
 
     Camera {
         id: camera
@@ -59,18 +74,22 @@ Entity {
         id: sensorTransform
 //        rotation: fromEulerAngles(pitch, yaw, roll)
         rotation: {
-            var s = Math.PI / 360
-            var cshy = Math.cos(yaw*s)
-            var cshp = Math.cos(pitch*s)
-            var cshr = Math.cos(roll*s)
-            var snhy = Math.sin(yaw*s)
-            var snhp = Math.sin(pitch*s)
-            var snhr = Math.sin(roll*s)
-            var q0 = cshr*cshp*cshy + snhr*snhp*snhy
-            var q1 = snhr*cshp*cshy - cshr*snhp*snhy
-            var q2 = cshr*snhp*cshy + snhr*cshp*snhy
-            var q3 = cshr*cshp*snhy - snhr*snhp*cshy
-            return Qt.quaternion(q0, q1, q2, q3)
+            if (showReceivedData) {
+                return Qt.quaternion(q0, q1, q2, q3)
+            } else {
+                var s = Math.PI / 360
+                var cshy = Math.cos(yaw*s)
+                var cshp = Math.cos(pitch*s)
+                var cshr = Math.cos(roll*s)
+                var snhy = Math.sin(yaw*s)
+                var snhp = Math.sin(pitch*s)
+                var snhr = Math.sin(roll*s)
+                var tq0 = cshr*cshp*cshy + snhr*snhp*snhy
+                var tq1 = snhr*cshp*cshy - cshr*snhp*snhy
+                var tq2 = cshr*snhp*cshy + snhr*cshp*snhy
+                var tq3 = cshr*cshp*snhy - snhr*snhp*cshy
+                return Qt.quaternion(tq0, tq1, tq2, tq3)
+            }
         }
     }
 

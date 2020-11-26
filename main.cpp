@@ -50,17 +50,31 @@
 
 #include <QGuiApplication>
 #include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include "attitude_solver.h"
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
+    AttitudeSolver* g_attitude_solver = new AttitudeSolver();
+    g_attitude_solver->start();
+
     QQuickView view;
 
     view.resize(500, 500);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
+    view.engine()->rootContext()->setContextProperty("g_attitude_solver", g_attitude_solver);
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
-    return app.exec();
+    try
+    {
+        return app.exec();
+    } catch(const std::exception &)
+    {
+        qDebug() << "program error";
+    }
+
 }

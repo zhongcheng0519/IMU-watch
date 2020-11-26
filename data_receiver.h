@@ -25,6 +25,7 @@ QDebug operator<<(QDebug dbg, const RawData_t &data);
  */
 class DataReceiver : public QThread
 {
+    Q_OBJECT
 public:
     DataReceiver();
 
@@ -33,13 +34,13 @@ public:
     void close();
 
 signals:
-    void dataReceived(RawData_t raw_data);
+    void dataReceived(long ts, float ax, float ay, float az, float gx, float gy, float gz);
 
 protected:
-    void run() override;
+    virtual void run() override;
 
 private:
-    std::string _pub_proto_ip{"tcp://192.168.31.111:"};
+    std::string _pub_proto_ip{"tcp://127.0.0.1:"};
     std::string _pub_port{"5556"};
     bool _working{false};
     RawData_t _raw_data;

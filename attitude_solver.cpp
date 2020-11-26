@@ -4,7 +4,9 @@
 AttitudeSolver::AttitudeSolver(QObject *parent) : QObject(parent)
 {
     _data_receiver = new DataReceiver();
-    connect(_data_receiver, SIGNAL(dataReceived(RawData_t)), this, SLOT(onDataReceived(RawData_t)));
+    _data_receiver->verbose(false);
+    connect(_data_receiver, SIGNAL(dataReceived(long,float,float,float,float,float,float)),
+            this, SLOT(onDataReceived(long,float,float,float,float,float,float)));
 }
 
 void AttitudeSolver::start()
@@ -17,16 +19,22 @@ void AttitudeSolver::start()
     _data_receiver->start();
 }
 
-void AttitudeSolver::onDataReceived(RawData_t raw_data)
+void AttitudeSolver::onDataReceived(long ts, float axf, float ayf, float azf, float gxf, float gyf, float gzf)
 {
-    double Kp = 0.0015;
+//    double Kp = 0.0015;
+    double Kp = 0.25;
+//    double Ki = 0.000001;
     double Ki = 0.000001;
-    double ax = raw_data.acc_x;
-    double ay = raw_data.acc_y;
-    double az = raw_data.acc_z;
-    double gx = raw_data.gyro_x;
-    double gy = raw_data.gyro_y;
-    double gz = raw_data.gyro_z;
+    double ax = axf;
+    double ay = ayf;
+    double az = azf;
+    double gx = gxf;
+    double gy = gyf;
+    double gz = gzf;
+//    double gx = 0;
+//    double gy = 0;
+//    double gz = 0;
+
     double acc_norm = sqrt(ax*ax + ay*ay + az*az);
 
     // norm acc
@@ -37,14 +45,14 @@ void AttitudeSolver::onDataReceived(RawData_t raw_data)
     float halfT = 0;
     if (_lastT == -1)
     {
-        _lastT = raw_data.timestamp;
+        _lastT = ts;
         return;
     }
     else
     {
         // ms -> s
-        halfT = (raw_data.timestamp - _lastT)/1000/2;
-        _lastT = raw_data.timestamp;
+        halfT = (ts - _lastT)/1000/2;
+        _lastT = ts;
     }
     // update q
     _q0 = _q0 + (-_q1*gx - _q2*gy - _q3*gz)* halfT;
@@ -56,11 +64,13 @@ void AttitudeSolver::onDataReceived(RawData_t raw_data)
     double est_gx = 2*(_q1*_q3 - _q0*_q2);
     double est_gy = 2*(_q0*_q1 + _q2*_q3);
     double est_gz = _q0*_q0 - _q1*_q1 - _q2*_q2 + _q3*_q3;
+//    qDebug() << "est_gx, est_gy, est_gz = (" << est_gx << "," << est_gy << "," << est_gz << ")";
 
     // error calculating by cross product
     double ex = (ay*est_gz - az*est_gy);
     double ey = (az*est_gx - ax*est_gz);
     double ez = (ax*est_gy - ay*est_gx);
+    qDebug() << "ex, ey, ez = (" << ex << "," << ey << "," << ez << ")";
 
     // integral error scaled integral gain
     _exInt = _exInt + ex*Ki;
@@ -90,5 +100,5 @@ void AttitudeSolver::onDataReceived(RawData_t raw_data)
     _q2 = _q2 / qnorm;
     _q3 = _q3 / qnorm;
 
-    emit attitudeChanged(QQuaternion(_q0, _q1, _q2, _q3));
+    emit attitudeChanged(_q0, _q1, _q2, _q3);
 }

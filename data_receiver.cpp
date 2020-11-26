@@ -44,6 +44,8 @@ void DataReceiver::run()
             {
                 if (_debug)
                     qDebug() << this->_raw_data;
+                emit dataReceived(_raw_data.timestamp, _raw_data.acc_x, _raw_data.acc_y, _raw_data.acc_z,
+                                  _raw_data.gyro_x, _raw_data.gyro_y, _raw_data.gyro_z);
             }
             else {
                 throw zmq::error_t();

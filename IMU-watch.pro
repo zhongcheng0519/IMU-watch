@@ -1,4 +1,4 @@
-QT += qml quick 3dinput
+QT += qml quick 3dinput widgets
 
 SOURCES += \
     main.cpp \
@@ -15,3 +15,6 @@ RESOURCES += \
 HEADERS += \
     data_receiver.h \
     attitude_solver.h
+
+LIBS += \
+    -lzmq
