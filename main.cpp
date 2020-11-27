@@ -63,8 +63,8 @@ int main(int argc, char **argv)
 
     QQuickView view;
 
-    view.resize(500, 500);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
+//    view.resize(500, 500);
+//    view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.engine()->rootContext()->setContextProperty("g_attitude_solver", g_attitude_solver);
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();

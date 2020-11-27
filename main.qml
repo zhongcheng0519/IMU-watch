@@ -3,8 +3,8 @@ import QtQuick.Scene3D 2.0
 import QtQuick.Controls 2.0
 
 Item {
-//    width: 800
-//    height: 600
+    width: 800
+    height: 600
 
     Component.onCompleted: {
         console.log("IMU-watch start...")
