@@ -34,6 +34,7 @@ void AttitudeSolver::onDataReceived(long ts, float axf, float ayf, float azf, fl
 //    double gx = 0;
 //    double gy = 0;
 //    double gz = 0;
+    double q0, q1, q2, q3;
 
     double acc_norm = sqrt(ax*ax + ay*ay + az*az);
 
@@ -55,15 +56,15 @@ void AttitudeSolver::onDataReceived(long ts, float axf, float ayf, float azf, fl
         _lastT = ts;
     }
     // update q
-    _q0 = _q0 + (-_q1*gx - _q2*gy - _q3*gz)* halfT;
-    _q1 = _q1 + (_q0*gx + _q2*gz - _q3*gy) * halfT;
-    _q2 = _q2 + (_q0*gy - _q1*gz + _q3*gx) * halfT;
-    _q3 = _q3 + (_q0*gz + _q1*gy - _q2*gx) * halfT;
+    q0 = _q0 + (-_q1*gx - _q2*gy - _q3*gz)* halfT;
+    q1 = _q1 + (_q0*gx + _q2*gz - _q3*gy) * halfT;
+    q2 = _q2 + (_q0*gy - _q1*gz + _q3*gx) * halfT;
+    q3 = _q3 + (_q0*gz + _q1*gy - _q2*gx) * halfT;
 
     // estimated direction of gravity
-    double est_gx = 2*(_q1*_q3 - _q0*_q2);
-    double est_gy = 2*(_q0*_q1 + _q2*_q3);
-    double est_gz = _q0*_q0 - _q1*_q1 - _q2*_q2 + _q3*_q3;
+    double est_gx = 2*(q1*q3 - q0*q2);
+    double est_gy = 2*(q0*q1 + q2*q3);
+    double est_gz = q0*q0 - q1*q1 - q2*q2 + q3*q3;
 //    qDebug() << "est_gx, est_gy, est_gz = (" << est_gx << "," << est_gy << "," << est_gz << ")";
 
     // error calculating by cross product

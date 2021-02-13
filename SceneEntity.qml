@@ -12,10 +12,10 @@ Entity {
     property real yaw: 0.0
     property real pitch: 0.0
     property real roll: 0.0
-    property real q0: 1.0
-    property real q1: 0.0
-    property real q2: 0.0
-    property real q3: 0.0
+    property real q0: 0.631430 //1.0
+    property real q1: -0.040534 //0.0
+    property real q2: -0.067639 //0.0
+    property real q3: 0.771413 //0.0
 
     Connections {
         target: g_attitude_solver
