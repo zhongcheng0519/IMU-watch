@@ -7,6 +7,8 @@ AttitudeSolver::AttitudeSolver(QObject *parent) : QObject(parent)
     _data_receiver->verbose(false);
     connect(_data_receiver, SIGNAL(dataReceived(long,float,float,float,float,float,float)),
             this, SLOT(onDataReceived(long,float,float,float,float,float,float)));
+    connect(_data_receiver, SIGNAL(qdataReceived(long,float,float,float,float)),
+            this, SLOT(onQDataReceived(long,float,float,float,float)));
 }
 
 void AttitudeSolver::start()
@@ -102,4 +104,10 @@ void AttitudeSolver::onDataReceived(long ts, float axf, float ayf, float azf, fl
     _q3 = _q3 / qnorm;
 
     emit attitudeChanged(_q0, _q1, _q2, _q3);
+}
+
+void AttitudeSolver::onQDataReceived(long ts, float q0, float q1, float q2, float q3)
+{
+    Q_UNUSED(ts);
+    emit attitudeChanged(q0, q1, q2, q3);
 }

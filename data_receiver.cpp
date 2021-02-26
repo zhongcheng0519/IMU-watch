@@ -39,13 +39,28 @@ void DataReceiver::run()
 
     while (_working)
     {
+        size_t sz = 0;
         try {
-            if (subscriber.recv(&_raw_data, sizeof(RawData_t)))
+            if ((sz = subscriber.recv(&_raw_data, sizeof(RawData_t))))
             {
                 if (_debug)
                     qDebug() << this->_raw_data;
-                emit dataReceived(_raw_data.timestamp, _raw_data.acc_x, _raw_data.acc_y, _raw_data.acc_z,
-                                  _raw_data.gyro_x, _raw_data.gyro_y, _raw_data.gyro_z);
+                if (sz == sizeof(RawData_t))
+                {
+                    emit dataReceived(_raw_data.timestamp, _raw_data.acc_x, _raw_data.acc_y, _raw_data.acc_z,
+                                      _raw_data.gyro_x, _raw_data.gyro_y, _raw_data.gyro_z);
+                }
+                else if (sz == sizeof(RawQData_t))
+                {
+                    RawQData_t qdata;
+                    memcpy(&qdata, &_raw_data, sizeof(RawQData_t));
+                    emit qdataReceived(qdata.timestamp, qdata.q0, qdata.q1, qdata.q2, qdata.q3);
+                }
+                else
+                {
+                    qWarning() << "Undefined error!";
+                }
+
             }
             else {
                 throw zmq::error_t();

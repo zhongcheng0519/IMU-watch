@@ -14,6 +14,7 @@ public:
     Q_INVOKABLE void start();
 public slots:
     void onDataReceived(long ts, float ax, float ay, float az, float gx, float gy, float gz);
+    void onQDataReceived(long ts, float q0, float q1, float q2, float q3);
 signals:
     void attitudeChanged(qreal aq0, qreal aq1, qreal aq2, qreal aq3);
 private:

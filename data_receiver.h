@@ -6,7 +6,7 @@
 #include <QThread>
 
 #pragma pack(push, 1)
-typedef struct{
+typedef struct {
     long timestamp;
     float temperature;
     float acc_x;
@@ -16,6 +16,14 @@ typedef struct{
     float gyro_y;
     float gyro_z;
 }RawData_t;
+
+typedef struct {
+    long timestamp;
+    float q0;
+    float q1;
+    float q2;
+    float q3;
+}RawQData_t;
 #pragma pack(pop)
 
 QDebug operator<<(QDebug dbg, const RawData_t &data);
@@ -35,6 +43,7 @@ public:
 
 signals:
     void dataReceived(long ts, float ax, float ay, float az, float gx, float gy, float gz);
+    void qdataReceived(long ts, float q0, float q1, float q2, float q3);
 
 protected:
     virtual void run() override;
